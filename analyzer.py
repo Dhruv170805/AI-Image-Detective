@@ -1,46 +1,69 @@
-import sys
 import os
-from transformers import BlipProcessor, BlipForConditionalGeneration
-from PIL import Image
-import warnings
+import sys
+from PIL import Image, ImageStat
 
-# Ignore warnings to keep the output clean for Node.js
-warnings.filterwarnings("ignore")
 
-try:
-    image_path = sys.argv[1]
+def dominant_colors(image, top_k=3):
+    reduced = image.convert('RGB').resize((96, 96))
+    quantized = reduced.quantize(colors=6, method=Image.Quantize.MEDIANCUT)
+    palette = quantized.getpalette() or []
+    color_counts = sorted(quantized.getcolors() or [], reverse=True)
 
-    # 1. UPGRADE THE AI: We are swapping "base" for "large"
-    # This model is smarter and has a much richer vocabulary
-    model_name = "Salesforce/blip-image-captioning-large"
-    
-    processor = BlipProcessor.from_pretrained(model_name)
-    model = BlipForConditionalGeneration.from_pretrained(model_name)
+    colors = []
+    for _, idx in color_counts[:top_k]:
+        base = idx * 3
+        r, g, b = palette[base:base + 3]
+        colors.append(f"rgb({r}, {g}, {b})")
+    return colors
 
-    raw_image = Image.open(image_path).convert('RGB')
 
-    # Give it an even stronger push to be descriptive
-    starting_text = "a highly detailed, vivid, and complex description of this scene shows "
-    inputs = processor(raw_image, text=starting_text, return_tensors="pt")
+def brightness_band(image):
+    avg = ImageStat.Stat(image.convert('L')).mean[0]
+    if avg < 65:
+        return 'dark'
+    if avg < 140:
+        return 'balanced'
+    return 'bright'
 
-    # 2. BRUTE-FORCE THE LENGTH
-    out = model.generate(
-        **inputs,
-        max_new_tokens=150,      # Maximum words allowed
-        min_new_tokens=40,       # THE FIX: It is forbidden to write fewer than 40 new words!
-        num_beams=5,             # Think 5x harder about the sentence structure
-        repetition_penalty=1.5,  # Strictly forbid it from repeating the same words
-        length_penalty=2.0       # Mathematically reward it for rambling and adding details
+
+def local_caption(image):
+    width, height = image.size
+    if width > height:
+        orientation = 'landscape'
+    elif height > width:
+        orientation = 'portrait'
+    else:
+        orientation = 'square'
+
+    colors = dominant_colors(image)
+    color_text = ', '.join(colors) if colors else 'mixed tones'
+
+    return (
+        f"This is a {orientation} image with resolution {width}x{height}. "
+        f"Overall lighting appears {brightness_band(image)}. "
+        f"Dominant color tones are {color_text}."
     )
-    
-    description = processor.decode(out[0], skip_special_tokens=True)
-    final_description = description.replace(starting_text, "").strip()
 
-    # Print the long description!
-    print(final_description.capitalize())
 
-    os._exit(0)
+def main():
+    if len(sys.argv) < 2:
+        print('Image file path is required.', file=sys.stderr)
+        return 1
 
-except Exception as e:
-    print(f"Error analyzing image: {str(e)}", file=sys.stderr)
-    os._exit(1)
+    image_path = sys.argv[1]
+    if not os.path.exists(image_path):
+        print('Image file does not exist.', file=sys.stderr)
+        return 1
+
+    try:
+        image = Image.open(image_path).convert('RGB')
+    except Exception as exc:
+        print(f"Error reading image: {str(exc)}", file=sys.stderr)
+        return 1
+
+    print(local_caption(image), flush=True)
+    return 0
+
+
+if __name__ == '__main__':
+    raise SystemExit(main())
