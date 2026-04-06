@@ -1,0 +1,10 @@
+[project]
+name = "ai-image-detective"
+version = "1.0.0"
+description = "Vision AI Studio: local OCR image analysis and PDF text extraction."
+requires-python = ">=3.9"
+dependencies = [
+    "pillow",
+    "pypdf",
+    "easyocr",
+]

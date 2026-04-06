@@ -1,7 +1,21 @@
+# Dependencies
 node_modules/
 dist/
-uploads/
+
+# Python
+.venv/
 venv/
 __pycache__/
 *.pyc
-sample-test.*
+*.pyo
+uv.lock
+
+# Uploads (temp files, never commit)
+uploads/
+
+# Environment secrets
+.env
+
+# Editor
+.vscode/
+*.swp

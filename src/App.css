@@ -1,59 +1,86 @@
 /* App.css */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
+/* =========================================================
+   Design Tokens
+   ========================================================= */
+:root {
+  --color-bg:          #030712;
+  --color-surface:     rgba(15, 23, 42, 0.4);
+  --color-border:      rgba(255, 255, 255, 0.08);
+  --color-text:        #f8fafc;
+  --color-muted:       #94a3b8;
+  --color-accent-1:    #4f46e5;
+  --color-accent-2:    #7c3aed;
+  --color-accent-pale: rgba(139, 92, 246, 0.05);
+  --color-error:       #f87171;
+
+  --radius-sm:  10px;
+  --radius-md:  16px;
+  --radius-lg:  24px;
+
+  --shadow-card: 0 30px 60px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  --shadow-btn:  0 10px 20px -5px rgba(124, 58, 237, 0.5);
+
+  --transition-fast: 0.2s ease;
+  --transition-std:  0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* =========================================================
+   Base
+   ========================================================= */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
   font-family: 'Inter', sans-serif;
   min-height: 100vh;
-  background-color: #030712; /* Deepest dark blue/black */
-  color: #f8fafc;
+  background-color: var(--color-bg);
+  color: var(--color-text);
   overflow-x: hidden;
 }
 
-/* --- The Glowing Aurora Background --- */
+/* =========================================================
+   Aurora Background
+   ========================================================= */
 .aurora-bg {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
+  inset: 0;
   z-index: -1;
   overflow: hidden;
-  background: #030712;
+  background: var(--color-bg);
 }
 
 .aurora-blob {
   position: absolute;
-  -webkit-filter: blur(80px); /* <-- Put -webkit- first */
-  filter: blur(80px);         /* <-- Put standard second */
-  z-index: 0;
+  filter: blur(80px);
   opacity: 0.6;
   animation: floatOrb 10s infinite alternate ease-in-out;
 }
 
 .blob-1 {
-  top: -10%;
-  left: -10%;
-  width: 500px;
-  height: 500px;
+  top: -10%; left: -10%;
+  width: 500px; height: 500px;
   background: radial-gradient(circle, #3b82f6 0%, transparent 70%);
 }
 
 .blob-2 {
-  bottom: -20%;
-  right: -10%;
-  width: 600px;
-  height: 600px;
+  bottom: -20%; right: -10%;
+  width: 600px; height: 600px;
   background: radial-gradient(circle, #8b5cf6 0%, transparent 70%);
   animation-delay: -5s;
 }
 
 @keyframes floatOrb {
-  0% { transform: translate(0, 0) scale(1); }
-  100% { transform: translate(50px, 50px) scale(1.1); }
+  from { transform: translate(0, 0)    scale(1); }
+  to   { transform: translate(50px, 50px) scale(1.1); }
 }
 
-/* --- The Main Layout --- */
+/* =========================================================
+   Layout
+   ========================================================= */
 .main-wrapper {
   display: flex;
   justify-content: center;
@@ -63,21 +90,22 @@ body {
 }
 
 .app-container {
-  background: rgba(15, 23, 42, 0.4);
-  -webkit-backdrop-filter: blur(24px);
+  background: var(--color-surface);
   backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--color-border);
   padding: 40px;
-  border-radius: 24px;
-  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
   width: 100%;
-  max-width: 550px;
+  max-width: 560px;
   text-align: center;
-  z-index: 10;
   animation: fadeUpIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* --- Typography --- */
+/* =========================================================
+   Header
+   ========================================================= */
 .header h1 {
   margin: 0;
   font-size: 36px;
@@ -85,18 +113,20 @@ body {
   letter-spacing: -1px;
   background: linear-gradient(135deg, #ffffff 0%, #a5b4fc 100%);
   -webkit-background-clip: text;
-  background-clip: text;
+          background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .header p {
-  color: #94a3b8;
-  margin-top: 12px;
-  margin-bottom: 24px;
-  font-size: 16px;
+  color: var(--color-muted);
+  margin: 10px 0 24px;
+  font-size: 15px;
   font-weight: 300;
 }
 
+/* =========================================================
+   Mode Switch (tabs)
+   ========================================================= */
 .mode-switch {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -108,12 +138,13 @@ body {
   border: 1px solid rgba(148, 163, 184, 0.35);
   background: rgba(15, 23, 42, 0.65);
   color: #cbd5e1;
-  border-radius: 10px;
+  border-radius: var(--radius-sm);
   padding: 10px 12px;
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all var(--transition-fast);
+  font-family: inherit;
 }
 
 .mode-btn:hover {
@@ -127,27 +158,29 @@ body {
   color: white;
 }
 
-/* --- Drop Zone --- */
+/* =========================================================
+   Drop Zone
+   ========================================================= */
 .drop-zone {
   border: 2px dashed rgba(255, 255, 255, 0.15);
-  border-radius: 16px;
+  border-radius: var(--radius-md);
   padding: 40px 20px;
   background: rgba(255, 255, 255, 0.02);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all var(--transition-std);
   cursor: pointer;
   position: relative;
 }
 
-.drop-zone:hover, .drop-zone.active {
+.drop-zone:hover,
+.drop-zone.active {
   border-color: #8b5cf6;
-  background: rgba(139, 92, 246, 0.05);
+  background: var(--color-accent-pale);
   transform: translateY(-2px);
 }
 
 .file-input {
   position: absolute;
-  top: 0;
-  left: 0;
+  inset: 0;
   width: 100%;
   height: 100%;
   opacity: 0;
@@ -158,48 +191,72 @@ body {
   font-size: 40px;
   display: block;
   margin-bottom: 12px;
-  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
 }
 
-/* --- Image Preview with Floating Effect --- */
+.drop-zone-hint {
+  margin: 0;
+  color: #cbd5e1;
+  font-weight: 500;
+}
+
+.selected-file {
+  margin: 10px 0 0;
+  color: var(--color-muted);
+  font-size: 13px;
+}
+
+/* =========================================================
+   Previews
+   ========================================================= */
 .image-preview-container {
   position: relative;
   margin-top: 10px;
   padding: 10px;
   background: rgba(0, 0, 0, 0.2);
-  border-radius: 16px;
+  border-radius: var(--radius-md);
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .image-preview {
   width: 100%;
-  max-height: 350px;
+  max-height: 320px;
   object-fit: contain;
-  border-radius: 10px;
+  border-radius: var(--radius-sm);
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
   animation: floatImage 6s ease-in-out infinite;
 }
 
-@keyframes floatImage {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
+.pdf-preview {
+  width: 100%;
+  height: 380px;
+  border-radius: var(--radius-sm);
+  border: none;
 }
 
-/* --- Premium Shimmer Button --- */
+@keyframes floatImage {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-6px); }
+}
+
+/* =========================================================
+   Analyse Button
+   ========================================================= */
 .analyze-btn {
-  margin-top: 25px;
+  margin-top: 22px;
   width: 100%;
-  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  background: linear-gradient(135deg, var(--color-accent-1), var(--color-accent-2));
   color: white;
-  border: 1px solid rgba(255,255,255,0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
   padding: 16px;
   font-size: 16px;
   font-weight: 600;
+  font-family: inherit;
   letter-spacing: 0.5px;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 10px 20px -5px rgba(124, 58, 237, 0.5);
+  transition: all var(--transition-std);
+  box-shadow: var(--shadow-btn);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -208,20 +265,16 @@ body {
   overflow: hidden;
 }
 
+/* Shimmer sweep */
 .analyze-btn::after {
   content: '';
   position: absolute;
-  top: 0;
-  left: -100%;
-  width: 50%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-  transition: all 0.5s ease;
+  top: 0; left: -100%;
+  width: 50%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
 }
-
-.analyze-btn:hover:not(:disabled)::after {
-  left: 100%;
-}
+.analyze-btn:hover:not(:disabled)::after { left: 100%; }
 
 .analyze-btn:hover:not(:disabled) {
   transform: translateY(-2px);
@@ -236,45 +289,114 @@ body {
   box-shadow: none;
 }
 
-/* Loading Spinner */
+/* =========================================================
+   Spinner
+   ========================================================= */
 .spinner {
-  width: 20px;
-  height: 20px;
-  border: 3px solid rgba(255,255,255,0.3);
+  width: 20px; height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
   border-radius: 50%;
   border-top-color: white;
-  animation: spin 1s ease-in-out infinite;
+  animation: spin 0.9s linear infinite;
+  flex-shrink: 0;
 }
 
-@keyframes spin {
-  to { transform: rotate(360deg); }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* =========================================================
+   Error Message
+   ========================================================= */
+.error-msg {
+  margin: 12px 0 0;
+  color: var(--color-error);
+  font-size: 14px;
+  text-align: left;
 }
 
-/* --- Refined Result Card --- */
+/* =========================================================
+   Result Card
+   ========================================================= */
 .result-card {
-  margin-top: 30px;
+  margin-top: 28px;
   padding: 24px;
   background: linear-gradient(145deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.9));
   border: 1px solid rgba(139, 92, 246, 0.3);
-  border-radius: 16px;
+  border-radius: var(--radius-md);
   text-align: left;
   animation: fadeUpIn 0.5s ease forwards;
   position: relative;
 }
 
+/* Accent left bar */
 .result-card::before {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 4px;
-  height: 100%;
+  top: 0; left: 0;
+  width: 4px; height: 100%;
   background: linear-gradient(to bottom, #60a5fa, #a855f7);
-  border-radius: 16px 0 0 16px;
+  border-radius: var(--radius-md) 0 0 var(--radius-md);
 }
 
-.result-card h3 {
-  margin: 0 0 12px 0;
+.result-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.result-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.result-section-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: #a5b4fc;
+}
+
+.result-section-body {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--color-text);
+  font-weight: 400;
+}
+
+.result-ocr {
+  font-size: 13px;
+  line-height: 1.7;
+  color: #cbd5e1;
+  background: rgba(0,0,0,0.2);
+  border-radius: 8px;
+  padding: 12px;
+  max-height: 200px;
+  overflow-y: auto;
+  word-break: break-word;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(139, 92, 246, 0.4) transparent;
+}
+
+.result-muted {
+  color: var(--color-muted);
+  font-style: italic;
+}
+
+.result-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  color: var(--color-muted);
+  font-size: 12px;
+}
+
+.result-title {
+  margin: 0 0 14px;
   color: #a5b4fc;
   font-size: 13px;
   text-transform: uppercase;
@@ -282,35 +404,47 @@ body {
   font-weight: 600;
 }
 
-.result-card p {
+.result-body {
   margin: 0;
-  color: #f8fafc;
-  font-size: 15px;
-  line-height: 1.6;
+  color: var(--color-text);
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  line-height: 1.7;
   font-weight: 300;
   white-space: pre-wrap;
-  max-height: 340px;
+  word-break: break-word;
+  max-height: 380px;
   overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(139, 92, 246, 0.4) transparent;
 }
 
+.result-body::-webkit-scrollbar        { width: 5px; }
+.result-body::-webkit-scrollbar-thumb  { background: rgba(139, 92, 246, 0.4); border-radius: 99px; }
+
+/* =========================================================
+   Reset Button
+   ========================================================= */
 .reset-btn {
-  margin-top: 20px;
+  margin-top: 18px;
   background: transparent;
-  color: #94a3b8;
+  color: var(--color-muted);
   border: none;
+  font-family: inherit;
   font-size: 14px;
   cursor: pointer;
-  transition: color 0.2s;
+  transition: color var(--transition-fast);
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
 }
 
-.reset-btn:hover {
-  color: #ffffff;
-}
+.reset-btn:hover { color: var(--color-text); }
 
+/* =========================================================
+   Entrance Animation
+   ========================================================= */
 @keyframes fadeUpIn {
   from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  to   { opacity: 1; transform: translateY(0); }
 }
